@@ -30,7 +30,7 @@ export default class URLPage extends Struct {
    */
   get icon() {
     // return page type label
-    return 'fa fa-align-justify';
+    return 'fa fa-browser';
   }
 
   /**
@@ -66,7 +66,7 @@ export default class URLPage extends Struct {
    */
   get categories() {
     // return array of categories
-    return ['frontend'];
+    return ['View'];
   }
 
   /**
@@ -74,6 +74,6 @@ export default class URLPage extends Struct {
    */
   get description() {
     // return description string
-    return 'Page Descripton';
+    return 'URL view page';
   }
 }
