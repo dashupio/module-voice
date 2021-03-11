@@ -2,12 +2,12 @@
 const { Module, Query } = require('@dashup/module');
 
 // import base
-const URLPage = require('./pages/url');
+const VoicePage = require('./pages/voice');
 
 /**
  * export module
  */
-class URLModule extends Module {
+class VoiceModule extends Module {
   
   /**
    * registers dashup structs
@@ -16,9 +16,9 @@ class URLModule extends Module {
    */
   register(fn) {
     // register sms action
-    fn('page', URLPage);
+    fn('page', VoicePage);
   }
 }
 
 // create new
-module.exports = new URLModule();
+module.exports = new VoiceModule();
