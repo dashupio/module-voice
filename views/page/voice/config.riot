@@ -1,24 +1,12 @@
 <page-voice-config>
   <div>
-    <div class="m-0">
-      <label for="dist" class="form-label">
-        URL to Display
-      </label>
-      <input class="form-control" name="dist" id="dist" onchange={ (e) => onURL(e) } type="text" value={ props.page.get('data.voice') || '' } />
-    </div>
+  
   </div>
 
   <script>
     // export default
     export default class DashupConfigVoice {
-
-      /**
-       * on color
-       */
-      onURL(e) {
-        // set color
-        this.props.data('voice', e.target.value);
-      }
+      
     }
   </script>
 </page-voice-config>
