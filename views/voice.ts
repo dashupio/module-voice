@@ -19,6 +19,10 @@ class VoiceModule extends EventEmitter {
     this.__id = null;
     this.__connections = new Map();
 
+    // join/leave
+    this.join  = this.join.bind(this);
+    this.leave = this.leave.bind(this);
+
     // bind
     this.onStream  = this.onStream.bind(this);
     this.onActive  = this.onActive.bind(this);
@@ -42,6 +46,9 @@ class VoiceModule extends EventEmitter {
     // set props
     this.props = props;
 
+    // return
+    if (this.client) return;
+
     // fix logging
     Agora.Logger.setLogLevel(2);
 
@@ -54,6 +61,19 @@ class VoiceModule extends EventEmitter {
     // init
     this.client.init('d09b1c0c036f48e6820cb198582748ea');
 
+    // get media
+    this.media = await this.getMedia();
+
+    // emit update
+    this.emit('update');
+  }
+
+  /**
+   * on join
+   *
+   * @param param0 
+   */
+  async join({ props }) {
     // load join
     const { token, id } = await props.page.action('join');
 
@@ -66,11 +86,11 @@ class VoiceModule extends EventEmitter {
       this.client.join(token, props.page.get('_id'), id, resolve, reject);
     });
 
-    // get media
-    this.media = await this.getMedia();
+    // connected
+    this.connected = true;
 
     // publish my stream
-    this.client.publish(this.media, console.log);
+    await this.client.publish(this.media);
 
     // on signals
     this.client.on('stream-added', (e) => {
@@ -81,6 +101,7 @@ class VoiceModule extends EventEmitter {
     this.client.on('stream-removed', this.offStream);
     this.client.on('active-speaker', this.onActive);
     this.client.on('stream-subscribed', this.onStream);
+    this.client.on('stream-unpublished', this.offStream);
 
     // update events
     this.client.on('mute-audio', this.onUpdate);
@@ -92,13 +113,16 @@ class VoiceModule extends EventEmitter {
     this.emit('update');
   }
 
-  /**
-   * init page
-   *
-   * @param page 
-   */
-  async destroy({ props }) {
-    
+  // leave
+  async leave({ props }) {
+    // check connected
+    if (!this.connected) return;
+
+    // not connected
+    this.connected = false;
+
+    // leave
+    await new Promise((resolve, reject) => this.client.leave(resolve, reject));
   }
 
   /**
@@ -234,20 +258,5 @@ const voiceModule = eden.voice || new VoiceModule();
 // set to eden
 eden.voice = voiceModule;
 
-// Create mixin
-export default (toMix) => {
-  // set dashup
-  if (!toMix.voice) toMix.voice = voiceModule;
-
-  // create safe update
-  toMix.safeUpdate = () => {
-    // update
-    toMix.update();
-  };
-
-  // update
-  voiceModule.on('update', toMix.safeUpdate);
-
-  // init to module
-  voiceModule.init(toMix);
-};
+// export default
+export default voiceModule;

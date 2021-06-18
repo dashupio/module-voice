@@ -72,7 +72,7 @@ export default class VoicePage extends Struct {
   get views() {
     // return object of views
     return {
-      view   : 'page/voice/view',
+      view   : 'page/voice',
       config : 'page/voice/config',
     };
   }
