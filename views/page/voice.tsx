@@ -13,6 +13,7 @@ import './voice.scss';
 // URL Page
 const PageVoice = (props = {}) => {
   // state
+  const [share, setShare] = useState(false);
   const [config, setConfig] = useState(false);
   const [joined, setJoined] = useState(false);
   const [updated, setUpdated] = useState(new Date());
@@ -98,8 +99,9 @@ const PageVoice = (props = {}) => {
   // return jsx
   return (
     <Page { ...props } bodyClass="flex-column">
+      <Page.Share show={ share } onHide={ (e) => setShare(false) } />
       <Page.Config show={ config } onHide={ (e) => setConfig(false) } />
-      <Page.Menu onConfig={ () => setConfig(true) } onShare />
+      <Page.Menu onConfig={ () => setConfig(true) } presence={ props.presence } onShare={ () => setShare(true) } />
       <Page.Body>
         { joined ? (
           <div className="flex-1 wrapper d-flex align-items-center">
