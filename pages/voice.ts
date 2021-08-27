@@ -42,7 +42,7 @@ export default class VoicePage extends Struct {
    */
   get icon() {
     // return page type label
-    return 'fa fa-browser';
+    return 'fad fa-video text-success';
   }
 
   /**
@@ -50,7 +50,7 @@ export default class VoicePage extends Struct {
    */
   get title() {
     // return page type label
-    return 'Voice Page';
+    return 'Video Call';
   }
 
   /**
@@ -82,7 +82,7 @@ export default class VoicePage extends Struct {
    */
   get categories() {
     // return array of categories
-    return ['View'];
+    return ['Chat'];
   }
 
   /**
@@ -90,7 +90,7 @@ export default class VoicePage extends Struct {
    */
   get description() {
     // return description string
-    return 'Voice call page';
+    return 'Shareable Conference call view';
   }
 
   /**
