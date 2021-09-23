@@ -1,8 +1,7 @@
 // import react
 import voice from '../voice';
-import { Page } from '@dashup/ui';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
+import { Page, OverlayTrigger, Tooltip } from '@dashup/ui';
 
 // voice video
 import VoiceVideo from './voice/video';

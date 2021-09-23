@@ -1,7 +1,7 @@
 
 // import react
 import ReactPlayer from 'react-player';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip } from '@dashup/ui';
 import React, { useState, useEffect } from 'react';
 
 // page voice video
