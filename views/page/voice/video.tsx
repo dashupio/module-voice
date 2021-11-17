@@ -1,8 +1,9 @@
 
 // import react
+import Ratio from 'react-ratio';
 import ReactPlayer from 'react-player';
-import { OverlayTrigger, Tooltip } from '@dashup/ui';
 import React, { useState, useEffect } from 'react';
+import { Box, Card, IconButton, Icon, Tooltip, CircularProgress } from '@dashup/ui';
 
 // page voice video
 const PageVoiceVideo = (props = {}) => {
@@ -86,40 +87,48 @@ const PageVoiceVideo = (props = {}) => {
 
   // return jsx
   return (
-    <div className={ `video-wrapper bg-secondary h-100 w-100${props.conn && props.conn.active ? ' border border-success' : ''}` }>
-      <div className={ `${isVideo() ? '' : ' d-none'}` }>
-        <ReactPlayer url={ props.stream?.stream } className={ `w-100 h-100` } playing muted={ muted || props.mine } />
-      </div>
-      { (props.fullSize || !props.mine) && (
-        <div className="video-buttons d-flex justify-content-center">
-          <OverlayTrigger
-            overlay={
-              <Tooltip>
-                { isAudio() ? 'Mute' : 'Unmute' }
-              </Tooltip>
-            }
-            placement="top"
-          >
-            <button className={ `btn btn-primary rounded-circle mx-1${props.fullSize ? ' btn-lg' : ''}` } onClick={ (e) => onToggleMuted(e) }>
-              <i className={ `fa fa-fw fa-${props.mine ? `microphone${isAudio() ? '' : '-slash'}` : `volume${isAudio() ? '-up' : '-slash'}`}` } />
-            </button>
-          </OverlayTrigger>
-          
-          <OverlayTrigger
-            overlay={
-              <Tooltip>
-                { isVideo() ? 'Off Video' : 'On Video' }
-              </Tooltip>
-            }
-            placement="top"
-          >
-            <button className={ `btn btn-primary rounded-circle mx-1${props.fullSize ? ' btn-lg' : ''}` } onClick={ (e) => onToggleVideo(e) }>
-              <i className={ `fa fa-fw fa-video${isVideo() ? '' : '-slash'}` } />
-            </button>
-          </OverlayTrigger>
-        </div>
-      ) }
-    </div>
+    <Card variant="outlined" sx={ {
+      ...props.sx,
+
+      position    : 'relative',
+      borderColor : props.conn?.active ? 'success.main' : undefined,
+    } }>
+      <Ratio ratio={ 16 / 9 }>
+        <Box width="100%" height="100%" sx={ {
+          '& .stream' : {
+            width  : '100%!important',
+            height : '100%!important',
+          }
+        } }>
+          { isVideo() && (
+            props.stream ? (
+              <ReactPlayer url={ props.stream?.stream } className="stream" playing muted={ muted || props.mine } />
+            ) : (
+              <Box height="100%" width="100%" display="flex" alignItems="center" justifyContent="center">
+                <CircularProgress />
+              </Box>
+            )
+          ) }
+        </Box>
+      </Ratio>
+      <Box position="absolute" bottom={ 0 } left={ 0 } right={ 0 } py={ 2 } display="flex" flexDirection="row" justifyContent="center">
+        <Tooltip title={ isAudio() ? 'Mute' : 'Unmute' }>
+          <IconButton onClick={ (e) => onToggleMuted(e) }>
+            { props.mine ? (
+              <Icon type="fas" icon={ `microphone${isAudio() ? '' : '-slash' }` } />
+            ) : (
+              <Icon type="fas" icon={ `volume${isAudio() ? '-up' : '-slash'}` } />
+            ) }
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={ isVideo() ? 'Video Off' : 'Video On' }>
+          <IconButton onClick={ (e) => onToggleVideo(e) }>
+            <Icon type="fas" icon={ `video${isVideo() ? '' : '-slash'}` } />
+          </IconButton>
+        </Tooltip>
+      </Box>
+      <Box />
+    </Card>
   );
 };
 

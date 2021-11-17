@@ -1,7 +1,7 @@
 // import react
 import voice from '../voice';
 import React, { useState, useEffect } from 'react';
-import { Page, OverlayTrigger, Tooltip } from '@dashup/ui';
+import { Page, Box, Container, Tooltip, Grid, Button, Typography, IconButton, Icon } from '@dashup/ui';
 
 // voice video
 import VoiceVideo from './voice/video';
@@ -102,107 +102,72 @@ const PageVoice = (props = {}) => {
       <Page.Config show={ config } onHide={ (e) => setConfig(false) } />
       <Page.Menu onConfig={ () => setConfig(true) } presence={ props.presence } onShare={ () => setShare(true) } />
       <Page.Body>
-        { joined ? (
-          <div className="flex-1 wrapper d-flex align-items-center">
-            <div className="w-100">
-              <div className="row justify-content-center">
+        <Box flex={ 1 } position="relative" display="flex">
+          { joined ? (
+            <Container>
+              <Grid container sx={ {
+                justifyContent : 'center',
+              } }>
                 { !!voice && (
                   connections.map((conn, i) => {
                     // return jsx
                     return (
-                      <div key={ conn.id } className={ `col-lg-${connections.length === 1 ? '10' : (connections.length === 2 ? '6' : '4')}` }>
-                        <div className={ `card mb-4 bg-secondary text-white` }>
-                          <div className="ratio ratio-16x9">
-                            <VoiceVideo voice={ voice } stream={ conn.stream } conn={ conn } />
-                          </div>
-                        </div>
-                      </div>
+                      <Grid item xs={ connections.length === 1 ? 10 : (connections.length === 2 ? 6 : 4) }>
+                        <VoiceVideo voice={ voice } stream={ conn.stream } conn={ conn } />
+                      </Grid>
                     );
                   })
                 ) }
-              </div>
-            </div>
+              </Grid>
+              
+              <Box position="absolute" left={ 0 } right={ 0 } bottom={ 0 } pb={ 3 } display="flex" justifyContent="center">
+                <Tooltip title={ isAudio() ? 'Mute' : 'Unmute' }>
+                  <IconButton onClick={ (e) => onToggleMuted(e) }>
+                    <Icon type="fas" icon={ `microphone${isAudio() ? '' : '-slash'}` } />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Leave Call">
+                  <IconButton onClick={ (e) => setJoined(null) }>
+                    <Icon type="fas" icon="phone-slash" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={ isVideo() ? 'Camera Off' : 'Camera On' }>
+                  <IconButton onClick={ (e) => onToggleVideo(e) }>
+                    <Icon type="fas" icon={ `video${isVideo() ? '' : '-slash'}` } />
+                  </IconButton>
+                </Tooltip>
+              </Box>
 
-            <div className="floating-buttons d-flex justify-content-center">
-              <OverlayTrigger
-                overlay={
-                  <Tooltip>
-                    { isAudio() ? 'Mute' : 'Unmute' }
-                  </Tooltip>
-                }
-                placement="top"
-              >
-                <button className={ `btn btn-primary mx-1 btn-lg rounded-circle` } onClick={ (e) => onToggleMuted(e) }>
-                  <i className={ `fa fa-fw fa-microphone${isAudio() ? '' : '-slash'}` } />
-                </button>
-              </OverlayTrigger>
-              <OverlayTrigger
-                overlay={
-                  <Tooltip>
-                    Leave Call
-                  </Tooltip>
-                }
-                placement="top"
-              >
-                <button className={ `btn btn-danger mx-1 btn-lg rounded-circle` } onClick={ (e) => setJoined(null) }>
-                  <i className={ `fa fa-fw fa-phone-slash` } />
-                </button>
-              </OverlayTrigger>
-              <OverlayTrigger
-                overlay={
-                  <Tooltip>
-                    { isVideo() ? 'Off Camera' : 'On Camera' }
-                  </Tooltip>
-                }
-                placement="top"
-              >
-                <button className={ `btn btn-primary mx-1 btn-lg rounded-circle` } onClick={ (e) => onToggleVideo(e) }>
-                  <i className={ `fa fa-fw fa-video${isVideo() ? '' : '-slash'}` } />
-                </button>
-              </OverlayTrigger>
-            </div>
-
-            <div className="card card-me bg-secondary">
-              <div className="ratio ratio-16x9">
-                { (!voice || !voice.media) ? (
-                  <div className="w-100 h-100 d-flex justify-content-center align-items-center">
-                    <i className="fa h1 fa-spinner fa-spin" />
-                  </div>
-                ) : (
-                  <VoiceVideo voice={ voice } mine={ true } stream={ voice.media } />
-                ) }
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex-1 d-flex align-items-center">
-            <div className="container-lg mx-auto">
-              <div className="row align-items-center">
-                <div className="col-lg-8">
-                  <div className="card card-join bg-secondary">
-                    <div className="ratio ratio-16x9">
-                      { (!voice || !voice.media) ? (
-                        <div className="w-100 h-100 d-flex justify-content-center align-items-center">
-                          <i className="fa h1 fa-spinner fa-spin" />
-                        </div>
-                      ) : (
-                        <VoiceVideo voice={ voice } mine={ true } fullSize stream={ voice.media } />
-                      ) }
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-4 text-center">
-                  <h2 className="mb-5">
-                    Ready to Join?
-                  </h2>
-                  <button className="btn btn-lg btn-primary" onClick={ () => setJoined(true) }>
-                    Join now
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) }
+              <Box position="absolute" left={ 0 } bottom={ 0 } pl={ 3 } pb={ 3 }>
+                <VoiceVideo voice={ voice } mine={ true } stream={ voice.media } sx={ {
+                  width : 360,
+                } } />
+              </Box>
+            </Container>
+          ) : (
+            <Box flex={ 1 } alignItems="center" display="flex">
+              <Container>
+                <Grid spacing={ 2 } container>
+                  <Grid item xs={ 7 }>
+                    <VoiceVideo voice={ voice } mine={ true } fullSize stream={ voice?.media } />
+                  </Grid>
+                  <Grid item xs={ 5 } alignItems="center" display="flex">
+                    <Box width="100%" textAlign="center">
+                      <Typography variant="h4" sx={ {
+                        mb : 3,
+                      } }>
+                        Ready to join?
+                      </Typography>
+                      <Button variant="contained" color="primary" size="large" onClick={ () => setJoined(true) }>
+                        Join Now
+                      </Button>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Container>
+            </Box>
+          ) }
+        </Box>
       </Page.Body>
     </Page>
   );
